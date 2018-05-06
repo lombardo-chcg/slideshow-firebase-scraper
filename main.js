@@ -18,12 +18,16 @@ const fetchHtml = async (url) => {
 	return r.data
 }
 
-const extractImgSrcAtts = (html) => {
+const extractImgAttrs = (html) => {
 	const $ = cheerio.load(html)
 	let output = []
 	$("img").each((idx, el) => {
-		const srcAttr = $(el).attr("src")
-		output.push(srcAttr)
+		const src = $(el).attr("src")
+    const title = $(el).attr("title")
+		output.push({
+      src: src,
+      title: title || ''
+    })
 	}) 
 	return output
 }
@@ -39,12 +43,10 @@ const runJob = async () => {
 	console.log(`🤓 starting scrape job on ${url}`)
 	try {
 		const html = await fetchHtml(url)
-		const imgSrcUrls = await extractImgSrcAtts(html)
-		console.log(`🕵️‍♂️  found ${imgSrcUrls.length} image tags`)
+		const images = await extractImgAttrs(html)
+		console.log(`🕵️‍♂️  found ${images.length} image tags`)
 		console.log(`🔥 sending to Firebase`)
-		await sendCollectionToFB(imgSrcUrls.map(url => {
-			return { imageUrl: url }
-		}))
+		await sendCollectionToFB(images)
 		Firebase.database().goOffline()
 		console.log("💃 job completed")
 	} catch(e) {
