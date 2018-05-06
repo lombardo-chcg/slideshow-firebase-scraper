@@ -1,0 +1,11 @@
+{
+  "name": "slideshow-firebase-scraper",
+  "version": "0.0.1",
+  "main": "main.js",
+  "license": "MIT",
+  "dependencies": {
+    "axios": "^0.18.0",
+    "cheerio": "^1.0.0-rc.2",
+    "firebase": "^4.13.1"
+  }
+}
